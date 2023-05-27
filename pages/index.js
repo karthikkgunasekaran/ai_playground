@@ -1,5 +1,13 @@
 import Head from "next/head";
 import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import { Navbar, Nav } from "react-bootstrap";
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 import Playground from "./playground";
 import FineTune from "./fineTune";
@@ -8,43 +16,67 @@ import indexStyles from "./index.module.css";
 export default function Home() {
 
   const [activePage, setActivePage] = useState("playground");
+  const [collapsed, setCollapsed] = useState(true);
 
   const handlePageChange = (page) => {
     setActivePage(page);
+    setCollapsed(true);
+  };
+
+  const toggleNavbar = () => {
+    setCollapsed(!collapsed);
   };
 
   return (
-    <div>
+    <div className={indexStyles.wrapper}>
       <Head>
-        <title>Mr.Cool - OpenAI Fine-Tuning</title>
-        <link rel="icon" href="/dhoni.png" />
+        <title>OpenAI Play Ground</title>
       </Head>
-      <main className={indexStyles.main}>
-        <img src="/dhoni.png" className={indexStyles.icon} />
-        <h3>OpenAI Playground</h3>
-        <header className={indexStyles.header}>
-          <nav className={indexStyles.nav}>
-            <button
-              className={activePage === "playground" ? indexStyles.active : ""}
-              onClick={() => handlePageChange("playground")}>
-              Playground
-            </button>
-            <button
-              className={activePage === "fine-tune" ? indexStyles.active : ""}
-              onClick={() => handlePageChange("fine-tune")}>
-              Fine-tune
-            </button>
-          </nav>
-        </header>
-        {activePage === "playground" && (
-          <Playground />
-        )}
+      <Navbar bg="light" expand="lg">
+        <Container fluid>
+          <Navbar.Brand href="#">OpenAI Playground</Navbar.Brand>
+          <Navbar.Toggle aria-controls="navbarScroll" />
+          <Navbar.Collapse id="navbarScroll">
+            <Nav
+              className="ms-auto my-2 my-lg-0"
+              style={{ maxHeight: '100px' }}
+              navbarScroll
+            >
+              <Nav.Link
+                href="#playground"
+                active={activePage === "playground"}
+                onClick={() => handlePageChange("playground")}
+              >
+                Playground
+              </Nav.Link>
+              <Nav.Link
+                href="#fine-tune"
+                active={activePage === "fine-tune"}
+                onClick={() => handlePageChange("fine-tune")}
+              >
+                Fine-tune
+              </Nav.Link>
+            </Nav>
+            <Button variant="outline-success" className="me-2">
+              <FontAwesomeIcon icon={faCog} />
+            </Button>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <div className="container-fluid">
+        <div className="row">
+          <div className={`${indexStyles.main} offset-1 col-md-10`}>
+            {activePage === "playground" && (
+              <Playground />
+            )}
 
-        {activePage === "fine-tune" && (
-          <FineTune />
-        )}
-
-      </main>
+            {activePage === "fine-tune" && (
+              <FineTune />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+

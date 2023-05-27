@@ -29,3 +29,36 @@
   resize: vertical;
   margin-bottom: 10px;
 }
+
+.settingsBg {
+  background-color: #000;
+  height: "100%";
+  width: "100%";
+  padding-top:20px;
+}
+
+.settingsBg .settingsItemLabel {
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settingsBg .settingsItemValue {
+  text-align: right;
+}
+
+
+.responses {
+  height: calc(100vh - 200px); /* Adjust the value based on your layout */
+  overflow-y: auto;
+}
+
+.promptAndSubmit {
+  margin-top: auto;
+}
+
+.responses-content {
+  max-height: 100%;
+  overflow-y: auto;
+}

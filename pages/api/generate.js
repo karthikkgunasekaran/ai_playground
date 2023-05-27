@@ -16,7 +16,9 @@ export default async function (req, res) {
   }
 
   const prompt = req.body.prompt || '';
-  const modelName = req.body.model || 'ada'; //text-ada-001
+  const modelName = req.body.model || 'text-ada-001';
+  const temperature = req.body.temperature || 0.5;
+  const maxTokens = req.body.maxTokens || 20;
   if (prompt.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -30,7 +32,8 @@ export default async function (req, res) {
     const completion = await openai.createCompletion({
       model: modelName,
       prompt: prompt,
-      temperature: 0.5,
+      temperature: temperature,
+      max_tokens: maxTokens
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
