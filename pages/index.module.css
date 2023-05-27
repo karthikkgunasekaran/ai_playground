@@ -70,28 +70,27 @@
   cursor: pointer;
 }
 
-.main .result {
+.nav {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 50px;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  font-size: 18px;
   font-weight: bold;
-  margin-top: 40px;
-}
-
-.listItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.question {
-  display: flex;
-  flex-direction: column;
-}
-
-.row {
-  margin-bottom: 8px;
-}
-
-.removeIcon {
-  height: 25px;
-  color: #999999; /* Grey color */
+  color: #353740;
+  margin: 0 16px;
   cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.nav button:hover {
+  color: #10a37f;
+}
+
+.nav button.active {
+  color: #10a37f;
 }

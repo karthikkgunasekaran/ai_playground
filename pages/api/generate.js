@@ -16,6 +16,7 @@ export default async function (req, res) {
   }
 
   const prompt = req.body.prompt || '';
+  const modelName = req.body.model || 'ada'; //text-ada-001
   if (prompt.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -27,7 +28,7 @@ export default async function (req, res) {
 
   try {
     const completion = await openai.createCompletion({
-      model: "text-ada-001",
+      model: modelName,
       prompt: prompt,
       temperature: 0.5,
     });
