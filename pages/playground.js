@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import playgroundStyles from "./playground.module.css";
 
-const predefinedModels = ["text-ada-001", "text-babbage-001", "text-curie-001"];
+const predefinedModels = ["text-ada-001", "text-babbage-001", "text-curie-001", "ada:ft-personal-2023-05-27-18-13-29"];
 
 export default function Playground() {
     const [promptInput, setPromptInput] = useState("");
@@ -49,7 +49,7 @@ export default function Playground() {
     async function onSubmit(event) {
         event.preventDefault();
         try {
-            const response = await fetch("/api/generate", {
+            const response = await fetch("/api/complete", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export default function Playground() {
                     model: modelInput,
                     temperature: temperatureInput,
                     maxTokens: maxTokenInput
-                }),
+                })
             });
 
             const data = await response.json();
