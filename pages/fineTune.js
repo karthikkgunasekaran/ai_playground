@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import styles from "./fineTune.module.css";
 
 export default function FineTune() {
-  const [fineTunedModelsRaw, setFineTunedModelsRaw] = useState([]);
   const [fineTuneModels, setFineTuneModels] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [fileUploadResponse, setFileUploadResponse] = useState(null);
@@ -19,13 +18,12 @@ export default function FineTune() {
     fetch("/api/fineTunes")
       .then((response) => response.json())
       .then((data) => {
-        console.log('Fine Tunes Model list');
         console.log(data);
-        setFineTunedModelsRaw(data);
-
         const extractedData = data.data.map((model) => ({
+          id: model.id,
           fineTunedModel: model.fine_tuned_model,
           status: model.status,
+          createdAt: convertTimestampToDatetime(model.created_at),
           updatedAt: convertTimestampToDatetime(model.updated_at)
         }));
 
@@ -56,8 +54,6 @@ export default function FineTune() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('Fine Upload Response');
-          console.log(data);
           setFileUploadResponse(data);
         })
         .catch((error) => console.error(error));
@@ -83,7 +79,6 @@ export default function FineTune() {
         .then((response) => response.json())
         .then((data) => {
           console.log('Tune Creation Response');
-          console.log(data);
           setTuneCreationResponse(data);
         })
         .catch((error) => console.error(error));
@@ -138,16 +133,20 @@ export default function FineTune() {
           <table className="table table-striped">
             <thead className="thead-light">
               <tr>
+                <th className="text-white" scope="col">Job Id</th>
                 <th className="text-white" scope="col">Fine Tuned Model</th>
                 <th className="text-white" scope="col">Status</th>
+                <th className="text-white" scope="col">Created At</th>
                 <th className="text-white" scope="col">Updated At</th>
               </tr>
             </thead>
             <tbody>
               {fineTuneModels.map((model, index) => (
                 <tr key={index}>
+                  <td className="text-white">{model.id}</td>
                   <td className="text-white">{model.fineTunedModel}</td>
                   <td className="text-white">{model.status}</td>
+                  <td className="text-white">{model.createdAt}</td>
                   <td className="text-white">{model.updatedAt}</td>
                 </tr>
               ))}

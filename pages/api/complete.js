@@ -35,8 +35,6 @@ export default async function (req, res) {
       temperature: temperature,
       max_tokens: maxTokens
     });
-    console.log('completion response');
-    console.log(completion);
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch (error) {
     // Consider adjusting the error handling logic for your use case

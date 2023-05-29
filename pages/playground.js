@@ -5,23 +5,42 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import playgroundStyles from "./playground.module.css";
 
-const predefinedModels = ["text-ada-001", "text-babbage-001", "text-curie-001", "ada:ft-personal-2023-05-27-18-13-29"];
+const baseLanguageModelOptions = ["text-ada-001", "text-babbage-001", "text-curie-001"];
 
 export default function Playground() {
     const [promptInput, setPromptInput] = useState("");
-    const [modelInput, setModelInput] = useState(predefinedModels[0]);
     const [temperatureInput, setTemperatureInput] = useState(0.5);
     const [maxTokenInput, setMaxTokenInput] = useState(10);
     const [questionList, setQuestionList] = useState([]);
+    const [languageModelOptions, setLanguageModelOptions] = useState([]);
+    const [modelInput, setModelInput] = useState(baseLanguageModelOptions[0]);
 
     const responsesRef = useRef(null);
     const promptAndSubmitRef = useRef(null);
 
-    // Function to remove a question from the list
-    const removeQuestion = (id) => {
-        const updatedList = questionList.filter((question) => question.id !== id);
-        setQuestionList(updatedList);
-    };
+    const convertTimestampToDatetime = (timestamp) => {
+        const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
+        return date.toLocaleString(); // Convert the date to a string in the user's local format
+      };
+
+    useEffect(() => {
+        // Fetch fine-tuned models data from the API
+        fetch("/api/fineTunes")
+            .then((response) => response.json())
+            .then((data) => {
+                const extractedData = data.data.map((model) => ({
+                    id: model.id,
+                    fineTunedModel: model.fine_tuned_model,
+                    status: model.status,
+                    createdAt: convertTimestampToDatetime(model.created_at),
+                    updatedAt: convertTimestampToDatetime(model.updated_at)
+                }));
+                const succeededModels = extractedData.filter(model => model.status === "succeeded").map(model => model.fineTunedModel);
+                const updatedLanguageModelOptions = [...baseLanguageModelOptions, ...succeededModels];
+                setLanguageModelOptions(updatedLanguageModelOptions);
+            })
+            .catch((error) => console.error(error));
+    }, []);
 
     useEffect(() => {
         const responsesContainer = responsesRef.current;
@@ -97,7 +116,7 @@ export default function Playground() {
                         onChange={(e) => setModelInput(e.target.value)}
                         style={{ width: "100%" }}
                     >
-                        {predefinedModels.map((model) => (
+                        {languageModelOptions.map((model) => (
                             <option key={model} value={model}>
                                 {model}
                             </option>
@@ -157,11 +176,6 @@ export default function Playground() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <FontAwesomeIcon
-                                                icon={faTrash}
-                                                className={playgroundStyles.removeIcon}
-                                                onClick={() => removeQuestion(question.id)}
-                                            />
                                         </div>
                                         {index !== questionList.length - 1 && <hr className={playgroundStyles.separator} />}
                                     </li>

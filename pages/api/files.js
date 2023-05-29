@@ -9,8 +9,8 @@ const openai = new OpenAIApi(configuration);
 export default async function (req, res) {
   if (req.method === 'POST') {
     try {
-      const fileName = req.body.fileName || 'sampleData.jsonl';
-
+      const path = require('path');
+      const fileName = path.join('dataset', req.body.fileName || '');
       // Call OpenAI's upload file API
       const uploadResponse = await openai.createFile(
         fs.createReadStream(fileName),

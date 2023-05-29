@@ -39,7 +39,8 @@ export default async function (req, res) {
 
       const fineTuneCreationResponse = await openai.createFineTune({
         training_file: fileId,
-        model: 'ada'
+        model: 'davinci:ft-personal-2023-05-28-10-09-03',
+        n_epochs: 16
       });
       console.log(fineTuneCreationResponse);
       // Handle the response or update the state as needed
