@@ -24,8 +24,14 @@ export default function Complete() {
     };
 
     useEffect(() => {
+        const apiKey = sessionStorage.getItem("auth-openai-apikey");
+
         // Fetch fine-tuned models data from the API
-        fetch("/api/fineTunes")
+        fetch("/api/fineTunes", {
+            headers: {
+                "auth-openai-apikey": apiKey
+            }
+        })
             .then((response) => response.json())
             .then((data) => {
                 const extractedData = data.data.map((model) => ({
@@ -33,10 +39,15 @@ export default function Complete() {
                     fineTunedModel: model.fine_tuned_model,
                     status: model.status,
                     createdAt: convertTimestampToDatetime(model.created_at),
-                    updatedAt: convertTimestampToDatetime(model.updated_at)
+                    updatedAt: convertTimestampToDatetime(model.updated_at),
                 }));
-                const succeededModels = extractedData.filter(model => model.status === "succeeded").map(model => model.fineTunedModel);
-                const updatedLanguageModelOptions = [...succeededModels, ...baseLanguageModelOptions];
+                const succeededModels = extractedData.filter(
+                    (model) => model.status === "succeeded"
+                ).map((model) => model.fineTunedModel);
+                const updatedLanguageModelOptions = [
+                    ...succeededModels,
+                    ...baseLanguageModelOptions,
+                ];
                 setLanguageModelOptions(updatedLanguageModelOptions);
             })
             .catch((error) => console.error(error));
@@ -68,10 +79,12 @@ export default function Complete() {
     async function onSubmit(event) {
         event.preventDefault();
         try {
+            const apiKey = sessionStorage.getItem("auth-openai-apikey");
             const response = await fetch("/api/complete", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "auth-openai-apikey": apiKey,
                 },
                 body: JSON.stringify({
                     prompt: promptInput,

@@ -5,12 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Complete from "./complete";
 import FineTune from "./fineTune";
 import Files from "./files";
+import Settings from "./settings";
 import indexStyles from "./index.module.css";
 
 const pages = [
   { id: "complete", title: "Completions" },
   { id: "fine-tune", title: "Fine-tuned Models" },
-  { id: "files", title: "Files" }
+  { id: "files", title: "Files" },
+  { id: "settings", title: "Settings" }
 ];
 
 export default function Home() {
@@ -67,6 +69,9 @@ export default function Home() {
             )}
             {activePage === "files" && (
               <Files />
+            )}
+             {activePage === "settings" && (
+              <Settings />
             )}
           </div>
         </div>

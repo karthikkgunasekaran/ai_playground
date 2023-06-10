@@ -1,12 +1,13 @@
 import { Configuration, OpenAIApi } from "openai";
 import fs from "fs";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
 export default async function (req, res) {
+
+  const configuration = new Configuration({
+    apiKey: req.headers["auth-openai-apikey"] || process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+
   if (req.method === 'GET') {
     if (!configuration.apiKey) {
       res.status(500).json({

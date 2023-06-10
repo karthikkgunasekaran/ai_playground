@@ -13,8 +13,14 @@ export default function FineTune() {
   };
 
   useEffect(() => {
+    const apiKey = sessionStorage.getItem("auth-openai-apikey");
+
     // Fetch fine-tuned models data from the API
-    fetch("/api/fineTunes")
+    fetch("/api/fineTunes", {
+      headers: {
+        "auth-openai-apikey": apiKey
+      }
+    })
       .then((response) => response.json())
       .then((data) => {
         const extractedData = data.data.map((model) => ({
@@ -33,11 +39,15 @@ export default function FineTune() {
   const handleTuneCreation = (event) => {
     event.preventDefault();
     if (fileId) {
+
+      const apiKey = sessionStorage.getItem("auth-openai-apikey");
+      
       // Send the file ID to the fineTunes API endpoint
       fetch("/api/fineTunes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "auth-openai-apikey": apiKey
         },
         body: JSON.stringify({
           fileId: fileId

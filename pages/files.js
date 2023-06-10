@@ -15,8 +15,14 @@ export default function Files() {
   };
 
   useEffect(() => {
+    const apiKey = sessionStorage.getItem("auth-openai-apikey");
+
     // Fetch fine-tuned models data from the API
-    fetch("/api/files")
+    fetch("/api/files", {
+      headers: {
+        "auth-openai-apikey": apiKey
+      }
+    })
       .then((response) => response.json())
       .then((data) => {
         const extractedData = data.data.map((model) => ({
@@ -44,12 +50,13 @@ export default function Files() {
     event.preventDefault();
     if (fileInput) {
       const fileName = fileInput.name;
-
+      const apiKey = sessionStorage.getItem("auth-openai-apikey");
       // Send the file to the fineTunes API endpoint
       fetch("/api/files", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "auth-openai-apikey": apiKey
         },
         body: JSON.stringify({
           fileName: fileName
