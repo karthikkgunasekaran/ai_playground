@@ -31,10 +31,10 @@
 }
 
 .settingsBg {
-  background-color: #000;
   height: "100%";
   width: "100%";
   padding-top:20px;
+  border-left:1px solid #ddd;
 }
 
 .settingsBg .settingsItemLabel {
@@ -48,17 +48,54 @@
   text-align: right;
 }
 
-
 .responses {
   height: calc(100vh - 200px); /* Adjust the value based on your layout */
   overflow-y: auto;
 }
 
-.promptAndSubmit {
-  margin-top: auto;
-}
 
 .responses-content {
   max-height: 100%;
   overflow-y: auto;
+}
+
+.promptAndSubmit {
+  display: flex;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-grow: 1;
+}
+
+.textarea {
+  flex-grow: 1;
+  resize: none;
+  height: 80px;
+  overflow-y: hidden;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.sendButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: #007bff;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.sendButtonContent {
+  display: inline-block;
+  padding: 5px 10px 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: rgb(42, 25, 195);;
+}
+
+.icon {
+  color: #fff;
 }

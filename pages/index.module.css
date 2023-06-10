@@ -1,23 +1,37 @@
 .wrapper {
-  background-color: #444654;
+  background-color: #fff;
   min-height: 100vh;
-  color: white;
+  color: black;
+}
+
+.topNavBar {
+  height: 60px;
+  border-bottom: 1px solid #ddd; /* Add bottom border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+}
+
+.topNavBar .brand {
+  display: inline-block;
+  padding: 0 30px;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.topNavBar .currentPageTitle {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.sidebar {
+  border-right: 1px solid #ddd; /* Add bottom border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow effect */
 }
 
 .main
 {
   padding:10px;
-}
-
-.container-fluid {
-  padding-right: 0;
-  padding-left: 0;
-}
-
-.col-md-3 {
-  padding-right: 0;
-}
-
-.navbar {
-  margin-bottom: 20px;
 }

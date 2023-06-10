@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-import playgroundStyles from "./playground.module.css";
+import completeStyles from "./complete.module.css";
 
 const baseLanguageModelOptions = ["text-ada-001", "text-babbage-001", "text-curie-001"];
 
-export default function Playground() {
+export default function Complete() {
     const [promptInput, setPromptInput] = useState("");
     const [temperatureInput, setTemperatureInput] = useState(0.5);
     const [maxTokenInput, setMaxTokenInput] = useState(10);
@@ -21,7 +21,7 @@ export default function Playground() {
     const convertTimestampToDatetime = (timestamp) => {
         const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
         return date.toLocaleString(); // Convert the date to a string in the user's local format
-      };
+    };
 
     useEffect(() => {
         // Fetch fine-tuned models data from the API
@@ -36,7 +36,7 @@ export default function Playground() {
                     updatedAt: convertTimestampToDatetime(model.updated_at)
                 }));
                 const succeededModels = extractedData.filter(model => model.status === "succeeded").map(model => model.fineTunedModel);
-                const updatedLanguageModelOptions = [...baseLanguageModelOptions, ...succeededModels];
+                const updatedLanguageModelOptions = [...succeededModels, ...baseLanguageModelOptions];
                 setLanguageModelOptions(updatedLanguageModelOptions);
             })
             .catch((error) => console.error(error));
@@ -105,9 +105,54 @@ export default function Playground() {
     return (
         <div className="container-fluid">
             <div className="row">
-                <div className={`${playgroundStyles.settingsBg} col-md-3`} >
+                <div className="col-md-9">
+                    <div ref={responsesRef} className={completeStyles.responses}>
+                        <div className={completeStyles.responsesContent}>
+                            <ul className={completeStyles.result} style={{ listStyleType: "none" }}>
+                                {questionList.map((question, index) => (
+                                    <li key={question.id}>
+                                        <div className={completeStyles.listItem}>
+                                            <div className={completeStyles.question}>
+                                                <div className={completeStyles.row}>
+                                                    <strong>Prompt:</strong> {question.prompt}
+                                                </div>
+                                                <div className={completeStyles.row}>
+                                                    <strong>Response:</strong> {question.response}
+                                                </div>
+                                                {question.errorMessage && (
+                                                    <div className={completeStyles.row}>
+                                                        <strong>Error Message:</strong> {question.errorMessage}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {index !== questionList.length - 1 && <hr className={completeStyles.separator} />}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                    <div ref={promptAndSubmitRef} className={completeStyles.promptAndSubmit}>
+                        <form onSubmit={onSubmit} className={completeStyles.form}>
+                            <textarea
+                                name="prompt"
+                                placeholder="Ask me anything!"
+                                value={promptInput}
+                                onChange={(e) => setPromptInput(e.target.value)}
+                                className={completeStyles.textarea}
+                            />
+                            <button type="submit" className={completeStyles.sendButton}>
+                                <div className={completeStyles.sendButtonContent}>
+                                    <FontAwesomeIcon icon={faPaperPlane} className={completeStyles.icon} />
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+                <div className={`${completeStyles.settingsBg} col-md-3`} >
                     <div>
-                        <label htmlFor="modelDropdown" className={playgroundStyles.settingsItemLabel}>Model</label>
+                        <label htmlFor="modelDropdown" className={completeStyles.settingsItemLabel}>Model</label>
                     </div>
                     <select
                         id="modelDropdown"
@@ -123,8 +168,8 @@ export default function Playground() {
                         ))}
                     </select>
                     <div>
-                        <label htmlFor="temperatureInput" className={playgroundStyles.settingsItemLabel}>
-                            Temperature <span className={playgroundStyles.settingsItemValue}>{temperatureInput}</span>
+                        <label htmlFor="temperatureInput" className={completeStyles.settingsItemLabel}>
+                            Temperature <span className={completeStyles.settingsItemValue}>{temperatureInput}</span>
                         </label>
                     </div>
 
@@ -140,8 +185,8 @@ export default function Playground() {
                     />
 
                     <div>
-                        <label htmlFor="maxTokenInput" className={playgroundStyles.settingsItemLabel}>
-                            Maximum Token <span className={playgroundStyles.settingsItemValue}>{maxTokenInput}</span>
+                        <label htmlFor="maxTokenInput" className={completeStyles.settingsItemLabel}>
+                            Maximum Token <span className={completeStyles.settingsItemValue}>{maxTokenInput}</span>
                         </label>
                     </div>
 
@@ -155,46 +200,6 @@ export default function Playground() {
                         onChange={(e) => setMaxTokenInput(parseFloat(e.target.value))}
                         style={{ width: "100%" }}
                     />
-                </div>
-                <div className="col-md-9">
-                    <div ref={responsesRef} className={playgroundStyles.responses}>
-                        <div className={playgroundStyles.responsesContent}>
-                            <ul className={playgroundStyles.result} style={{ listStyleType: "none" }}>
-                                {questionList.map((question, index) => (
-                                    <li key={question.id}>
-                                        <div className={playgroundStyles.listItem}>
-                                            <div className={playgroundStyles.question}>
-                                                <div className={playgroundStyles.row}>
-                                                    <strong>Prompt:</strong> {question.prompt}
-                                                </div>
-                                                <div className={playgroundStyles.row}>
-                                                    <strong>Response:</strong> {question.response}
-                                                </div>
-                                                {question.errorMessage && (
-                                                    <div className={playgroundStyles.row}>
-                                                        <strong>Error Message:</strong> {question.errorMessage}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {index !== questionList.length - 1 && <hr className={playgroundStyles.separator} />}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                    <div ref={promptAndSubmitRef} className={playgroundStyles.promptAndSubmit}>
-                        <form onSubmit={onSubmit}>
-                            <textarea
-                                name="prompt"
-                                placeholder="Ask me anything!"
-                                value={promptInput}
-                                onChange={(e) => setPromptInput(e.target.value)}
-                                className={playgroundStyles.textarea}
-                            />
-                            <input type="submit" value="Submit" />
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>

@@ -7,7 +7,33 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
+    if (!configuration.apiKey) {
+      res.status(500).json({
+        error: {
+          message: "OpenAI API key not configured, please follow instructions in README.md",
+        }
+      });
+      return;
+    }
+    try {
+      const listFiles = await openai.listFiles();
+      res.status(200).json(listFiles.data);
+    } catch (error) {
+      // Consider adjusting the error handling logic for your use case
+      if (error.response) {
+        console.error(error.response.status, error.response.data);
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        console.error(`Error with OpenAI API request: ${error.message}`);
+        res.status(500).json({
+          error: {
+            message: 'An error occurred during your request.',
+          }
+        });
+      }
+    }
+  } else if (req.method === 'POST') {
     try {
       const path = require('path');
       const fileName = path.join('dataset', req.body.fileName || '');

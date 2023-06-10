@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import styles from "./fineTune.module.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function FineTune() {
   const [fineTuneModels, setFineTuneModels] = useState([]);
-  const [fileInput, setFileInput] = useState(null);
-  const [fileUploadResponse, setFileUploadResponse] = useState(null);
   const [fileId, setFileId] = useState('');
   const [tuneCreationResponse, setTuneCreationResponse] = useState(null);
 
@@ -18,7 +17,6 @@ export default function FineTune() {
     fetch("/api/fineTunes")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const extractedData = data.data.map((model) => ({
           id: model.id,
           fineTunedModel: model.fine_tuned_model,
@@ -31,37 +29,6 @@ export default function FineTune() {
       })
       .catch((error) => console.error(error));
   }, []);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setFileInput(file);
-  };
-
-  const handleFileCreate = (event) => {
-    event.preventDefault();
-    if (fileInput) {
-      const fileName = fileInput.name;
-
-      // Send the file to the fineTunes API endpoint
-      fetch("/api/files", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fileName: fileName
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setFileUploadResponse(data);
-        })
-        .catch((error) => console.error(error));
-
-      // Reset the file input
-      setFileInput(null);
-    }
-  };
 
   const handleTuneCreation = (event) => {
     event.preventDefault();
@@ -91,25 +58,7 @@ export default function FineTune() {
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-md-2">
-          Upload Training Data
-          <form onSubmit={handleFileCreate}>
-            <input
-              type="file"
-              name="file"
-              accept=".jsonl"
-              onChange={handleFileChange}
-            />
-            <input type="submit" value="Submit" />
-          </form>
-          {fileUploadResponse && (
-            <div>
-              <h4>File Upload Response:</h4>
-              <pre>{JSON.stringify(fileUploadResponse, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-        <div className="col-md-2">
+        <div className="col-md-3">
           Tine Tune Creation
           <form onSubmit={handleTuneCreation}>
             <input
@@ -128,26 +77,26 @@ export default function FineTune() {
             </div>
           )}
         </div>
-        <div className="col-md-6">
+        <div className="col-md-9">
           Avaiable Fine Tuned Models
           <table className="table table-striped">
-            <thead className="thead-light">
+            <thead>
               <tr>
-                <th className="text-white" scope="col">Job Id</th>
-                <th className="text-white" scope="col">Fine Tuned Model</th>
-                <th className="text-white" scope="col">Status</th>
-                <th className="text-white" scope="col">Created At</th>
-                <th className="text-white" scope="col">Updated At</th>
+                <th scope="col">Job Id</th>
+                <th scope="col">Fine Tuned Model</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Updated At</th>
               </tr>
             </thead>
             <tbody>
               {fineTuneModels.map((model, index) => (
                 <tr key={index}>
-                  <td className="text-white">{model.id}</td>
-                  <td className="text-white">{model.fineTunedModel}</td>
-                  <td className="text-white">{model.status}</td>
-                  <td className="text-white">{model.createdAt}</td>
-                  <td className="text-white">{model.updatedAt}</td>
+                  <td>{model.id}</td>
+                  <td>{model.fineTunedModel}</td>
+                  <td>{model.status}</td>
+                  <td>{model.createdAt}</td>
+                  <td>{model.updatedAt}</td>
                 </tr>
               ))}
             </tbody>

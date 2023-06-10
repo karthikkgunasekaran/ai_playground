@@ -1,30 +1,23 @@
 import Head from "next/head";
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
-import { Navbar, Nav } from "react-bootstrap";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
-
-import Playground from "./playground";
+import Complete from "./complete";
 import FineTune from "./fineTune";
+import Files from "./files";
 import indexStyles from "./index.module.css";
 
+const pages = [
+  { id: "complete", title: "Completions" },
+  { id: "fine-tune", title: "Fine-tuned Models" },
+  { id: "files", title: "Files" }
+];
+
 export default function Home() {
+  const [activePage, setActivePage] = useState(pages[0].id);
 
-  const [activePage, setActivePage] = useState("playground");
-  const [collapsed, setCollapsed] = useState(true);
-
-  const handlePageChange = (page) => {
-    setActivePage(page);
-    setCollapsed(true);
-  };
-
-  const toggleNavbar = () => {
-    setCollapsed(!collapsed);
+  const handlePageChange = (pageId) => {
+    setActivePage(pageId);
   };
 
   return (
@@ -32,46 +25,48 @@ export default function Home() {
       <Head>
         <title>OpenAI Play Ground</title>
       </Head>
-      <Navbar bg="light" expand="lg">
-        <Container fluid>
-          <Navbar.Brand href="#">OpenAI Playground</Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll">
-            <Nav
-              className="ms-auto my-2 my-lg-0"
-              style={{ maxHeight: '100px' }}
-              navbarScroll
-            >
-              <Nav.Link
-                href="#playground"
-                active={activePage === "playground"}
-                onClick={() => handlePageChange("playground")}
-              >
-                Playground
-              </Nav.Link>
-              <Nav.Link
-                href="#fine-tune"
-                active={activePage === "fine-tune"}
-                onClick={() => handlePageChange("fine-tune")}
-              >
-                Fine-tune
-              </Nav.Link>
-            </Nav>
-            <Button variant="outline-success" className="me-2">
-              <FontAwesomeIcon icon={faCog} />
-            </Button>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+
       <div className="container-fluid">
         <div className="row">
-          <div className={`${indexStyles.main} offset-1 col-md-10`}>
-            {activePage === "playground" && (
-              <Playground />
+          <nav className={`${indexStyles.topNavBar} navbar`}>
+            <div className="col-md-2">
+              <a className={indexStyles.brand} href="#">Open AI Playground</a>
+            </div>
+            <div className={`${indexStyles.currentPageTitle} col-md-10`}>
+              {pages.map((page) => {
+                if (activePage === page.id) {
+                  return <span key={page.id}>{page.title}</span>;
+                }
+                return null;
+              })}
+            </div>
+          </nav>
+        </div>
+        <div className="row">
+          <div className={`${indexStyles.sidebar} col-md-2`}>
+            <ul className="nav flex-column">
+              {pages.map((page) => (
+                <li className="nav-item" key={page.id}>
+                  <a
+                    className={`nav-link ${activePage === page.id ? "active" : ""}`}
+                    href={`#${page.id}`}
+                    onClick={() => handlePageChange(page.id)}
+                  >
+                    {page.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={`${indexStyles.main} col-md-10`}>
+            {activePage === "complete" && (
+              <Complete />
             )}
-
             {activePage === "fine-tune" && (
               <FineTune />
+            )}
+            {activePage === "files" && (
+              <Files />
             )}
           </div>
         </div>
@@ -79,4 +74,3 @@ export default function Home() {
     </div>
   );
 }
-
