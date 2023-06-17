@@ -7,6 +7,7 @@ export default function Files() {
   const [fileInput, setFileInput] = useState(null);
   const [fileUploadResponse, setFileUploadResponse] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
 
 
   const convertTimestampToDatetime = (timestamp) => {
@@ -53,6 +54,9 @@ export default function Files() {
       return;
     }
 
+    setFileUploadResponse(null);
+    toggleModal();
+    setShowProgress(true);
     const formData = new FormData();
     formData.append("file", fileInput);
     console.log(formData);
@@ -73,14 +77,39 @@ export default function Files() {
 
     // Reset the file input
     setFileInput(null);
-
   };
 
   return (
     <div className="container-fluid">
+      {showProgress && (
+        <div className="row bg-light">
+          <div className={`col-md-12 ${styles.fileUploadResponse}`}>
+            <div className="d-flex justify-content-between align-items-center">
+              <h4 className="text-center">File Upload Response</h4>
+              <button
+                type="button"
+                className={`btn btn-sm btn-secondary ${styles.closeButton}`}
+                onClick={() => setShowProgress(false)}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            {!fileUploadResponse && (
+              <div className="text-center my-3">File upload is in progress. Please wait...</div>
+            )}
+
+            {fileUploadResponse && (
+              <div>
+                <pre>{JSON.stringify(fileUploadResponse, null, 2)}</pre>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="row my-3">
         <div className="col-md-12 d-flex justify-content-end">
-          <button className="btn btn-primary" onClick={toggleModal}>
+          <button className="btn btn-primary" onClick={() => { setShowProgress(false); toggleModal(); }}>
             + New File
           </button>
           {showModal && (
@@ -115,12 +144,7 @@ export default function Files() {
               </div>
             </div>
           )}
-          {fileUploadResponse && (
-            <div>
-              <h4>File Upload Response:</h4>
-              <pre>{JSON.stringify(fileUploadResponse, null, 2)}</pre>
-            </div>
-          )}
+
         </div>
       </div>
       <div className="row">

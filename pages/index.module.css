@@ -6,32 +6,53 @@
 
 .topNavBar {
   height: 60px;
-  border-bottom: 1px solid #ddd; /* Add bottom border */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .topNavBar .brand {
   display: inline-block;
-  padding: 0 30px;
+  padding: 0 15px;
   font-size: 20px;
   font-weight: bold;
   text-decoration: none;
-  color: #333;
+  color: #140083;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
 
+.topNavBar .brand:hover {
+  color: #0056b3;
+}
+
+
 .topNavBar .currentPageTitle {
-  font-size: 15px;
+  padding-left: 15px;
+  font-size: 17px;
   font-weight: bold;
 }
 
 .sidebar {
-  border-right: 1px solid #ddd; /* Add bottom border */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+  border-right: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .main
 {
   padding:10px;
+}
+
+.inactiveLink {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.inactiveLink:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+.active-link {
+  background-color: #f8f9fa;
+  color: #007bff;
 }
