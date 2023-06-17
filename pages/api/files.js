@@ -1,5 +1,13 @@
 import { Configuration, OpenAIApi } from "openai";
 import fs from "fs";
+import { IncomingForm } from "formidable";
+import path from "path";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function (req, res) {
 
@@ -35,31 +43,68 @@ export default async function (req, res) {
       }
     }
   } else if (req.method === 'POST') {
-    try {
-      const path = require('path');
-      const fileName = path.join('dataset', req.body.fileName || '');
-      // Call OpenAI's upload file API
-      const uploadResponse = await openai.createFile(
-        fs.createReadStream(fileName),
-        "fine-tune"
-      );
+    const form = new IncomingForm({ multiples: false });
+    const parseFormData = () =>
+      new Promise((resolve, reject) => {
+        form.parse(req, (err, fields, files) => {
+          if (err) {
+            console.error('Error parsing form data:', err);
+            reject(err);
+            return;
+          }
+          resolve(files);
+        });
+      });
 
-      // Handle the response or update the state as needed
-      res.status(200).json(uploadResponse.data);
-    } catch (error) {
-      // Consider adjusting the error handling logic for your use case
-      if (error.response) {
-        console.error(error.response.status, error.response.data);
-        res.status(error.response.status).json(error.response.data);
-      } else {
-        console.error(`Error with OpenAI API request: ${error.message}`);
-        res.status(500).json({
+    try {
+      const files = await parseFormData();
+      const file = files && files.file;
+      if (!file) {
+        res.status(400).json({
           error: {
-            message: 'An error occurred during your request.',
+            message: 'No file uploaded.',
+          },
+        });
+        return;
+      }
+
+      try {
+        const folderPath = path.dirname(file.filepath);
+        const newFilePath = path.join(folderPath, file.originalFilename);
+        fs.rename(file.filepath, newFilePath, (err) => {
+          if (err) {
+            console.error('Error renaming file:', err);
+          } else {
+            console.log('File renamed successfully');
           }
         });
+        const uploadResponse = await openai.createFile(fs.createReadStream(newFilePath), 'fine-tune');
+        // Handle the response or update the state as needed
+        res.status(200).json(uploadResponse.data);
+      }
+      catch (error) {
+        if (error.response) {
+          console.error(error.response.status, error.response.data);
+          res.status(error.response.status).json(error.response.data);
+        } else {
+          console.error(`Error with OpenAI API request: ${error.message}`);
+          res.status(500).json({
+            error: {
+              message: 'An error occurred during your request.',
+            }
+          });
+        }
       }
     }
+    catch (error) {
+      console.error(`Error parsing form data: ${error.message}`);
+      res.status(500).json({
+        error: {
+          message: 'An error occurred during form data parsing.',
+        },
+      });
+    }
+
   } else {
     // Handle other HTTP verbs
     res.status(405).json({ message: 'Method Not Allowed' });

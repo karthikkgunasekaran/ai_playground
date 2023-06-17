@@ -48,29 +48,32 @@ export default function Files() {
 
   const handleFileCreate = (event) => {
     event.preventDefault();
-    if (fileInput) {
-      const fileName = fileInput.name;
-      const apiKey = sessionStorage.getItem("auth-openai-apikey");
-      // Send the file to the fineTunes API endpoint
-      fetch("/api/files", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-openai-apikey": apiKey
-        },
-        body: JSON.stringify({
-          fileName: fileName
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setFileUploadResponse(data);
-        })
-        .catch((error) => console.error(error));
-
-      // Reset the file input
-      setFileInput(null);
+    if (!fileInput) {
+      alert("Please select a file to upload");
+      return;
     }
+
+    const formData = new FormData();
+    formData.append("file", fileInput);
+    console.log(formData);
+    const apiKey = sessionStorage.getItem("auth-openai-apikey");
+    // Send the file to the fineTunes API endpoint
+    fetch("/api/files", {
+      method: "POST",
+      headers: {
+        "auth-openai-apikey": apiKey
+      },
+      body: formData
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setFileUploadResponse(data);
+      })
+      .catch((error) => console.error(error));
+
+    // Reset the file input
+    setFileInput(null);
+
   };
 
   return (
