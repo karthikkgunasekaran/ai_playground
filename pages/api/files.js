@@ -29,7 +29,6 @@ export default async function (req, res) {
       const listFiles = await openai.listFiles();
       res.status(200).json(listFiles.data);
     } catch (error) {
-      // Consider adjusting the error handling logic for your use case
       if (error.response) {
         console.error(error.response.status, error.response.data);
         res.status(error.response.status).json(error.response.data);
@@ -67,7 +66,6 @@ export default async function (req, res) {
         });
         return;
       }
-
       try {
         const folderPath = path.dirname(file.filepath);
         const newFilePath = path.join(folderPath, file.originalFilename);
@@ -79,7 +77,6 @@ export default async function (req, res) {
           }
         });
         const uploadResponse = await openai.createFile(fs.createReadStream(newFilePath), 'fine-tune');
-        // Handle the response or update the state as needed
         res.status(200).json(uploadResponse.data);
       }
       catch (error) {
@@ -106,7 +103,6 @@ export default async function (req, res) {
     }
 
   } else {
-    // Handle other HTTP verbs
     res.status(405).json({ message: 'Method Not Allowed' });
   }
 }

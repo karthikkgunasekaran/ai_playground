@@ -19,7 +19,7 @@
 
 .removeIcon {
   height: 25px;
-  color: #999999; /* Grey color */
+  color: #999999;
   cursor: pointer;
 }
 
@@ -49,10 +49,9 @@
 }
 
 .responses {
-  height: calc(100vh - 200px); /* Adjust the value based on your layout */
+  height: calc(100vh - 200px);
   overflow-y: auto;
 }
-
 
 .responses-content {
   max-height: 100%;

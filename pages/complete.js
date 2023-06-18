@@ -25,7 +25,6 @@ export default function Complete() {
 
     useEffect(() => {
         const apiKey = sessionStorage.getItem("auth-openai-apikey");
-
         // Fetch fine-tuned models data from the API
         fetch("/api/fineTunes", {
             headers: {
@@ -109,7 +108,6 @@ export default function Complete() {
             setQuestionList([...questionList, newQuestion]);
             setPromptInput("");
         } catch (error) {
-            // Consider implementing your own error handling logic here
             console.error(error);
             alert(error.message);
         }

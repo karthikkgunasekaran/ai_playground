@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from "./settings.module.css";
-import commonStyles from "./common.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Settings() {

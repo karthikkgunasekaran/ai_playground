@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi } from "openai";
-import fs from "fs";
 
 export default async function (req, res) {
 
@@ -21,7 +20,6 @@ export default async function (req, res) {
       const listFineTunes = await openai.listFineTunes();
       res.status(200).json(listFineTunes.data);
     } catch (error) {
-      // Consider adjusting the error handling logic for your use case
       if (error.response) {
         console.error(error.response.status, error.response.data);
         res.status(error.response.status).json(error.response.data);
@@ -37,17 +35,14 @@ export default async function (req, res) {
   } else if (req.method === 'POST') {
     try {
       const fileId = req.body.fileId || '';
-
       const fineTuneCreationResponse = await openai.createFineTune({
         training_file: fileId,
         model: 'davinci:ft-personal-2023-05-28-10-09-03',
         n_epochs: 16
       });
       console.log(fineTuneCreationResponse);
-      // Handle the response or update the state as needed
       res.status(200).json(fineTuneCreationResponse.data);
     } catch (error) {
-      // Consider adjusting the error handling logic for your use case
       if (error.response) {
         console.error(error.response.status, error.response.data);
         res.status(error.response.status).json(error.response.data);
@@ -61,7 +56,6 @@ export default async function (req, res) {
       }
     }
   } else {
-    // Handle other HTTP verbs
     res.status(405).json({ message: 'Method Not Allowed' });
   }
 }

@@ -17,8 +17,6 @@ export default function Files() {
 
   useEffect(() => {
     const apiKey = sessionStorage.getItem("auth-openai-apikey");
-
-    // Fetch fine-tuned models data from the API
     fetch("/api/files", {
       headers: {
         "auth-openai-apikey": apiKey
@@ -53,7 +51,6 @@ export default function Files() {
       alert("Please select a file to upload");
       return;
     }
-
     setFileUploadResponse(null);
     toggleModal();
     setShowProgress(true);
@@ -61,7 +58,6 @@ export default function Files() {
     formData.append("file", fileInput);
     console.log(formData);
     const apiKey = sessionStorage.getItem("auth-openai-apikey");
-    // Send the file to the fineTunes API endpoint
     fetch("/api/files", {
       method: "POST",
       headers: {
@@ -74,8 +70,6 @@ export default function Files() {
         setFileUploadResponse(data);
       })
       .catch((error) => console.error(error));
-
-    // Reset the file input
     setFileInput(null);
   };
 
@@ -134,7 +128,7 @@ export default function Files() {
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-primary" onClick={handleFileCreate}>
-                      Save changes
+                      Create
                     </button>
                     <button type="button" className="btn btn-secondary" onClick={toggleModal}>
                       Close
